@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  nginx:
+    image: nginx:latest
+    container_name: nginx_server
+    restart: unless-stopped
+    ports:
+      - "80:80"       # HTTP
+      - "443:443"     # HTTPS
+    volumes:
+      - ./conf:/etc/nginx/conf.d    # Custom Nginx configurations
+      - ./ssl:/etc/nginx/ssl        # SSL certificates
+      - ./logs:/var/log/nginx       # Logs
+      - ./html:/usr/share/nginx/html # Static files (optional)
+    networks:
+      - nginx_network
+
+networks:
+  nginx_network:
+    driver: bridge
