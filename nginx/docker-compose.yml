@@ -1,18 +1,20 @@
 version: '3.8'
 
 services:
-  nginx:
-    image: nginx:latest
-    container_name: nginx_server
+  nginx-proxy-manager:
+    image: jc21/nginx-proxy-manager:latest
+    container_name: nginx-proxy-manager
     restart: unless-stopped
     ports:
-      - "80:80"       # HTTP
-      - "443:443"     # HTTPS
+      - "81:81"  # Web GUI access on port 81
+    environment:
+      # Set environment variables for database password and other settings
+      - DB_SQLITE_FILE=/data/database.sqlite  # SQLite database file path (for simplicity)
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}   # Root MySQL password
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}           # User MySQL password
     volumes:
-      - ./conf:/etc/nginx/conf.d    # Custom Nginx configurations
-      - ./ssl:/etc/nginx/ssl        # SSL certificates
-      - ./logs:/var/log/nginx       # Logs
-      - ./html:/usr/share/nginx/html # Static files (optional)
+      - ./data:/data
+      - ./letsencrypt:/etc/letsencrypt
     networks:
       - nginx_network
 
